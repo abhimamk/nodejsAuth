@@ -1,6 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-
+const cors = require("cors");
 const User = require('../models/user');
 const Session = require('../models/session');
 const { authenticate } = require('../middleware/authenticate');
@@ -8,6 +8,9 @@ const { csrfCheck } = require('../middleware/csrfCheck');
 const { initSession, isEmail } = require('../utils/utils');
 
 const router = express.Router();
+const app = express();
+
+router.use(cors({ origin: '*' }));
 
 router.post('/register', async (req, res) => {
   try {
@@ -96,6 +99,7 @@ router.post('/login', async (req, res) => {
         title: 'Login Successful',
         detail: 'Successfully validated user credentials',
         csrfToken: session.csrfToken,
+        cookie: session.token,
       });
   } catch (err) {
     res.status(401).json({
@@ -166,7 +170,7 @@ router.delete('/me', authenticate, csrfCheck, async (req, res) => {
   }
 });
 
-router.put('/logout', authenticate, csrfCheck, async (req, res) => {
+router.get('/logout', authenticate, csrfCheck, async (req, res) => {
   try {
     const { session } = req;
     await session.expireToken(session.token);

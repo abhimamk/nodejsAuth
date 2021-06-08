@@ -4,7 +4,7 @@ const Session = require('../models/session');
 const csrfCheck = async (req, res, next) => {
   try {
     const { csrfToken } = req.session;
-    const receivedCsrfToken = req.headers['csrf-token'];
+    const receivedCsrfToken = req.headers.authorization;
     if (!receivedCsrfToken || csrfToken !== receivedCsrfToken) {
       throw new Error('Provided CSRF-token is invalid');
     }

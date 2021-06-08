@@ -15,6 +15,7 @@ module.exports = function(app) {
     // get all All Custom Titles
     app.get('/api/getAllCustomTitles', CustomTitles.getAllCustomTitle);
 
+    app.get('/api/pagination', CustomTitles.findAll);
     // Update Custom Title
     app.put('/api/updateCustomTitle/:id', CustomTitles.updateCustomTitle);
 

@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
+const cors = require("cors");
 
 const { getSecret } = require('./secrets');
 const usersRoute = require('./routes/users');
@@ -28,6 +29,7 @@ app.listen(port, () => {
 });
 
 module.exports = { app };
+app.use(cors({ origin: '*' }));
 
 require('./routes/customTitle.routes')(app);
 require('./routes/note.routes')(app);

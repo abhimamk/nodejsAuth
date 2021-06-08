@@ -1,5 +1,11 @@
 const { response } = require('express');
 const CustomTitles = require('../../models/customTitle');
+const getPagination = (page, size) => {
+    const limit = size ? +size : 1;
+    const offset = page ? page * limit : 0;
+  
+    return { limit, offset };
+  };
 // const { Handler: { successResponseHandler, errorResponseHandler } } = require('../../../utils/handlers.util');
 module.exports = {
     // add customTitle
@@ -28,6 +34,36 @@ module.exports = {
             }
         });
     },
+
+    findAll : function (req, res) {
+        // const { page, limit } = req.query;
+        // var condition = title
+        //   ? { title: { $regex: new RegExp(title), $options: "i" } }
+        //   : {};
+      
+        // const { limit, offset } = getPagination(page, size);
+        // const { limit, offset } = getPagination(page, size);
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+        CustomTitles.paginate({}, { page, limit })
+          .then((data) => {
+            res.send({
+            //   totalItems: data.totalDocs,
+              result: data.docs,
+            //   totalPages: data.totalPages,
+              page: data.page,
+              NumberOfTitle:  data.total,
+              displayedTitle: data.limit,
+              pages: data.pages,
+            });
+          })
+          .catch((err) => {
+            res.status(500).send({
+              message:
+                err.message || "Some error occurred while retrieving tutorials.",
+            });
+          });
+      },
 
     // Update Custom Title
     updateCustomTitle: async (req, res) => {
