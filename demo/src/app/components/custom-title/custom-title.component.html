@@ -15,8 +15,8 @@
     </form>
 
     <div style="padding-top: 2rem;">
-        <input type="text" class="float-right" placeholder="Search Title" 
-            aria-describedby="basic-addon2" (keyup)="search($event.target.value)">
+        <input type="text" class="float-right" placeholder="Search Title" aria-describedby="basic-addon2"
+            (keyup)="search($event.target.value)">
     </div>
     <div class="table-responsive-sm-md-lg-xl" style="padding-top: 3rem;">
         <table class="table table-striped table-bordered">
@@ -28,7 +28,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let item of customTitle; let i=index">
+                <tr *ngFor="let item of customTitle | paginate: { id: 'foo',
+                itemsPerPage: itemPerPage,
+                currentPage: cPage,
+                totalItems: total }, let i = index;">
                     <th scope="row">{{i+1}}</th>
                     <td>{{item.title}}</td>
                     <td>
@@ -42,20 +45,24 @@
     <div class="d-flex flex-wrap flex-sm-nowrap justify-content-between align-items-start">
         <!-- <pagination-controls *ngIf="titleNames?.length !==0" (pageChange)="pageId1 = $event;" class="my-pagination">
         </pagination-controls> -->
-        <div class="d-flex align-items-center mt-2" *ngIf="customTitle?.length !==0">
-          <span class="px-1 text-nowrap">{{'Rows Per Page'}}</span>
-          <span class="position-relative px-1">
-            <select class="pl-2 pr-4 rounded" (change)="pageSize($event.target.value)">
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="15">15</option>
-
-            </select>
-            <small class="position-absolute w-100 h-100 d-inline-flex justify-content-end align-items-center pr-2"
-              style="top: 0;right: 0;pointer-events: none;">
-              <span class="icon-arrow-down"></span>
-            </small>
-          </span>
+        <pagination-controls id="foo" (pageChange)="pageChanged($event)"
+            (pageBoundsCorrection)="pageChanged($event)" directionLinks="true" 
+            responsive="true" previousLabel="Previous" nextLabel="Next" screenReaderPaginationLabel="Pagination"
+            screenReaderPageLabel="page" screenReaderCurrentLabel="You're on page">
+        </pagination-controls>
+        <div class="d-flex align-items-center mt-2" >
+            <span class="px-1 text-nowrap">{{'Rows Per Page'}}</span>
+            <span class="position-relative px-1">
+                <select class="pl-2 pr-4 rounded" (change)="pageSize($event.target.value)">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                </select>
+                <small class="position-absolute w-100 h-100 d-inline-flex justify-content-end align-items-center pr-2"
+                    style="top: 0;right: 0;pointer-events: none;">
+                    <span class="icon-arrow-down"></span>
+                </small>
+            </span> <span>Total: {{total}}</span>
         </div>
-      </div>
+    </div>
 </div>

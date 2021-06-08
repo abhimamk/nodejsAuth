@@ -15,8 +15,11 @@ export class CustomTitleComponent implements OnInit {
   titleObj: Title;
   submitted = false;
   itemPerPage = 5;
-
-
+  pageId1 = 1;
+  pageSizes: any;
+  cPage: any;
+  total: any;
+  currentPage = 1;
   constructor(
     private customTitleService: CustomTitleService,
     private formBuilder: FormBuilder,
@@ -64,22 +67,26 @@ export class CustomTitleComponent implements OnInit {
   }
 
   pagination(): any {
-    this.customTitleService.pagination(1, this.itemPerPage).subscribe(
+    this.customTitleService.pagination(this.currentPage, this.itemPerPage).subscribe(
       (res: any) => {
-        console.log(res.body.result);
+        console.log(res.body);
         this.customTitle = res.body.result.reverse();
+        this.pageSizes = res.body.pages;
+        this.cPage = res.body.page;
+        this.total = res.body.NumberOfTitle;
       }
     );
   }
 
+  pageChanged(value): any {
+    // alert(value);
+    this.currentPage = value;
+    this.pagination();
+  }
+
   pageSize(value: number): void {
     this.itemPerPage = value;
-    this.customTitleService.pagination(1, this.itemPerPage).subscribe(
-      (res: any) => {
-        console.log(res);
-        this.customTitle = res.body.result.reverse();
-      }
-    );
+    this.pagination();
   }
 
   // Add And Update CustomTitle
