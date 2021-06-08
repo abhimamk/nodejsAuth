@@ -7,7 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-custom-title',
   templateUrl: './custom-title.component.html',
-  styleUrls: ['./custom-title.component.css']
+  styleUrls: ['./custom-title.component.css'],
 })
 export class CustomTitleComponent implements OnInit {
   customTitle: Title[];
@@ -20,11 +20,12 @@ export class CustomTitleComponent implements OnInit {
   cPage: any;
   total: any;
   currentPage = 1;
+  searchSe = '';
   constructor(
     private customTitleService: CustomTitleService,
     private formBuilder: FormBuilder,
     public toastr: ToastrService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -33,20 +34,20 @@ export class CustomTitleComponent implements OnInit {
   }
 
   initForm(): void {
-    this.customTitleForm = this.formBuilder.group(
-      {
-        title: ['', Validators.compose([Validators.required])]
-      }
-    );
+    this.customTitleForm = this.formBuilder.group({
+      title: ['', Validators.compose([Validators.required])],
+    });
   }
 
-  get f(): any { return this.customTitleForm.controls; }
+  get f(): any {
+    return this.customTitleForm.controls;
+  }
 
   toasterSuccess(responseGood): any {
     this.toastr.success('', responseGood, {
       timeOut: 2000,
       progressBar: true,
-      progressAnimation: 'decreasing'
+      progressAnimation: 'decreasing',
     });
   }
 
@@ -54,28 +55,26 @@ export class CustomTitleComponent implements OnInit {
     this.toastr.error('', responseError, {
       timeOut: 2000,
       progressBar: true,
-      progressAnimation: 'decreasing'
+      progressAnimation: 'decreasing',
     });
   }
 
   getAllCustomTitle(): any {
-    this.customTitleService.getAllCustomTitle().subscribe(
-      (res: Title[]) => {
-        this.customTitle = res.reverse();
-      }
-    );
+    this.customTitleService.getAllCustomTitle().subscribe((res: Title[]) => {
+      this.customTitle = res.reverse();
+    });
   }
 
   pagination(): any {
-    this.customTitleService.pagination(this.currentPage, this.itemPerPage).subscribe(
-      (res: any) => {
+    this.customTitleService
+      .pagination(this.currentPage, this.itemPerPage, this.searchSe)
+      .subscribe((res: any) => {
         console.log(res.body);
-        this.customTitle = res.body.result.reverse();
-        this.pageSizes = res.body.pages;
-        this.cPage = res.body.page;
-        this.total = res.body.NumberOfTitle;
-      }
-    );
+        this.customTitle = res.result.reverse();
+        this.pageSizes = res.pages;
+        this.cPage = res.page;
+        this.total = res.NumberOfTitle;
+      });
   }
 
   pageChanged(value): any {
@@ -131,7 +130,7 @@ export class CustomTitleComponent implements OnInit {
       },
       // Success
       () => {
-        this.getAllCustomTitle();
+        this.pagination();
         this.clear();
       }
     );
@@ -140,11 +139,9 @@ export class CustomTitleComponent implements OnInit {
   // Edit
   edit(item): void {
     this.titleObj = item;
-    this.customTitleForm.patchValue(
-      {
-        title: item.title
-      }
-    );
+    this.customTitleForm.patchValue({
+      title: item.title,
+    });
   }
 
   delete(id): void {
@@ -165,15 +162,24 @@ export class CustomTitleComponent implements OnInit {
   }
 
   // Search Title
-  search(value: string): any {
-    const data = {
-      search: value
-    };
-    this.customTitleService.searchTitle(data).subscribe(
-      (res) => {
-        return this.customTitle = res.newResponse;
-      }
-    );
+  search(value): any {
+    this.searchSe = value;
+    // const data = {
+    //   search: value
+    // };
+    // this.customTitleService.searchTitle(data).subscribe(
+    //   (res) => {
+    //     return this.customTitle = res.newResponse;
+    //   }
+    // );
+    this.customTitleService
+      .pagination(this.currentPage, this.itemPerPage, this.searchSe)
+      .subscribe((res: any) => {
+        this.customTitle = res.result.reverse();
+        this.pageSizes = res.pages;
+        this.cPage = res.page;
+        this.total = res.NumberOfTitle;
+      });
   }
 
   // Clear
