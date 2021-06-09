@@ -59,7 +59,7 @@ module.exports = {
     CustomTitles.paginate(condition, { page, limit })
       .then((data) => {
         res.send({
-          result: data.docs,
+          response: data.docs,
           page: data.page,
           NumberOfTitle: data.total,
           displayedTitle: data.limit,

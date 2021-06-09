@@ -10,17 +10,18 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./custom-title.component.css'],
 })
 export class CustomTitleComponent implements OnInit {
-  customTitle: Title[];
+  customTitle: any[];
   customTitleForm: FormGroup;
   titleObj: Title;
   submitted = false;
   itemPerPage = 5;
   pageId1 = 1;
-  pageSizes: any;
-  cPage: any;
-  total: any;
+  pageSizes: number;
+  cPage: number;
+  total: number;
   currentPage = 1;
   searchSe = '';
+  sortDir = 1;
   constructor(
     private customTitleService: CustomTitleService,
     private formBuilder: FormBuilder,
@@ -29,7 +30,6 @@ export class CustomTitleComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    // this.getAllCustomTitle();
     this.pagination();
   }
 
@@ -59,9 +59,9 @@ export class CustomTitleComponent implements OnInit {
     });
   }
 
-  getAllCustomTitle(): any {
+  getAllCustomTitle(): void {
     this.customTitleService.getAllCustomTitle().subscribe((res: Title[]) => {
-      this.customTitle = res.reverse();
+     return this.customTitle = res.reverse();
     });
   }
 
@@ -69,16 +69,14 @@ export class CustomTitleComponent implements OnInit {
     this.customTitleService
       .pagination(this.currentPage, this.itemPerPage, this.searchSe)
       .subscribe((res: any) => {
-        console.log(res.body);
-        this.customTitle = res.result.reverse();
+        this.customTitle = res.response.reverse();
         this.pageSizes = res.pages;
         this.cPage = res.page;
         this.total = res.NumberOfTitle;
       });
   }
 
-  pageChanged(value): any {
-    // alert(value);
+  pageChanged(value): void {
     this.currentPage = value;
     this.pagination();
   }
@@ -90,7 +88,7 @@ export class CustomTitleComponent implements OnInit {
 
   // Add And Update CustomTitle
 
-  submit(id): any {
+  submit(id: string): any {
     this.submitted = true;
     if (this.customTitleForm.invalid) {
       return;
@@ -164,22 +162,38 @@ export class CustomTitleComponent implements OnInit {
   // Search Title
   search(value): any {
     this.searchSe = value;
-    // const data = {
-    //   search: value
-    // };
-    // this.customTitleService.searchTitle(data).subscribe(
-    //   (res) => {
-    //     return this.customTitle = res.newResponse;
-    //   }
-    // );
     this.customTitleService
       .pagination(this.currentPage, this.itemPerPage, this.searchSe)
       .subscribe((res: any) => {
-        this.customTitle = res.result.reverse();
+        this.customTitle = res.response.reverse();
         this.pageSizes = res.pages;
         this.cPage = res.page;
         this.total = res.NumberOfTitle;
       });
+  }
+
+  onSortClick(event): any {
+    const target = event.currentTarget;
+    const  classList = target.classList;
+
+    if (classList.contains('fa-chevron-up')) {
+      classList.remove('fa-chevron-up');
+      classList.add('fa-chevron-down');
+      this.sortDir = -1;
+    } else {
+      classList.add('fa-chevron-up');
+      classList.remove('fa-chevron-down');
+      this.sortDir = 1;
+    }
+    this.sortArr('title');
+  }
+
+  sortArr(colName: any): any {
+    this.customTitle.sort((a, b) => {
+      a = a[colName].toLowerCase();
+      b = b[colName].toLowerCase();
+      return a.localeCompare(b) * this.sortDir;
+    });
   }
 
   // Clear

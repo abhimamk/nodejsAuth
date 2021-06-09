@@ -1,4 +1,21 @@
 .table {
-    /* table-layout: fixed; */
-    word-wrap: break-word;
+  /* table-layout: fixed; */
+  word-wrap: break-word;
 }
+
+.my-icon {
+  font-size: 14px;
+  /* color: rgb(214, 34, 34); */
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.myTable {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: left;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+  }
