@@ -33,9 +33,9 @@ export class ResponseInterceptor implements HttpInterceptor {
         }
         if (error instanceof HttpErrorResponse && error.status === 401) {
           if (error.error.message) {
-            // this.toaster.error(error.error.errors[0].detail, 'Oops!');
+            this.toaster.error(error.error.errors[0].detail, 'Oops!');
           } else {
-            // this.toaster.error(error.error.errors[0].detail, 'Oops!');
+            this.toaster.error(error.error.errors[0].detail, 'Oops!');
           }
         //   this.spinner.hide();
           return observableThrowError(error);
