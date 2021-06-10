@@ -18,8 +18,7 @@ export class AuthService {
     }
 
     login(instance): Observable<any> {
-        return this.http.post<any>(`/users/login`, instance).pipe
-            (catchError(this.handelError));
+        return this.http.post<any>(`/users/login`, instance);
     }
 
     logout(): Observable<any> {
@@ -67,7 +66,7 @@ export class AuthService {
         if (!errorResponse.error || !errorResponse.error) {
             return throwError(customError);
         }
-        switch (errorResponse.error.errors[0].detail) {
+        switch (errorResponse.error) {
             case 'Email or password is Invalid':
                 customError = ' Email or password is Invalid';
                 break;
