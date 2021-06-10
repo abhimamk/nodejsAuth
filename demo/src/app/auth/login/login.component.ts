@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
         this.clearFormData();
       }
     },
-      customError => { this.error = customError; }
+      (customError) => { this.error = customError.error.errors[0].detail; }
     );
 
   }
