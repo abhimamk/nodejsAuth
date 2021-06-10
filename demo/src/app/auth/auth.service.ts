@@ -41,7 +41,7 @@ export class AuthService {
     //   }
 
     newRegistration(instance): Observable<any> {
-        return this.http.post<any>(`/customer/createNewCustomer`, instance);
+        return this.http.post<any>(`/users/register`, instance);
     }
 
     //   logOutById(userId): any {

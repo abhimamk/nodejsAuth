@@ -13,15 +13,15 @@ module.exports = function(app) {
     ], validate, CustomTitles.addCustomTitle);
 
     // get all All Custom Titles
-    app.get('/api/getAllCustomTitles', CustomTitles.getAllCustomTitle);
+    app.get('/api/getAllCustomTitles', authenticate, csrfCheck, CustomTitles.getAllCustomTitle);
 
-    app.get('/api/pagination', CustomTitles.findAll);
+    app.get('/api/pagination', authenticate, csrfCheck, CustomTitles.findAll);
     // Update Custom Title
-    app.put('/api/updateCustomTitle/:id', CustomTitles.updateCustomTitle);
+    app.put('/api/updateCustomTitle/:id', authenticate, csrfCheck, CustomTitles.updateCustomTitle);
 
     // Delete Custom Title
-    app.delete('/api/deleteCustomTitle/:id', CustomTitles.deleteCustomTitle);
+    app.delete('/api/deleteCustomTitle/:id', authenticate, csrfCheck, CustomTitles.deleteCustomTitle);
 
     // Search Title
-    app.post('/api/searchTitle', CustomTitles.searchTitle);
+    app.post('/api/searchTitle', authenticate, csrfCheck, CustomTitles.searchTitle);
 }

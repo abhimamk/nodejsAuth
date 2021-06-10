@@ -10,7 +10,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./custom-title.component.css'],
 })
 export class CustomTitleComponent implements OnInit {
-  customTitle: any[];
+  customTitle: any[] = [];
   customTitleForm: FormGroup;
   titleObj: Title;
   submitted = false;

@@ -24,27 +24,27 @@ export class ResponseInterceptor implements HttpInterceptor {
       catchError((error: any, caught: Observable<any>): Observable<HttpErrorResponse | HttpErrorResponse> => {
         if (error instanceof HttpErrorResponse && error.status === 400) {
           if (error.error.message) {
-            this.toaster.error(error.error.message, 'Oops!');
+            // this.toaster.error(error.error.message, 'Oops!');
           } else {
-            this.toaster.error(error.error, 'Oops!');
+            // this.toaster.error(error.error, 'Oops!');
           }
         //   this.spinner.hide();
           return observableThrowError(error);
         }
         if (error instanceof HttpErrorResponse && error.status === 401) {
           if (error.error.message) {
-            this.toaster.error(error.error.errors[0].detail, 'Oops!');
+            // this.toaster.error(error.error.errors[0].detail, 'Oops!');
           } else {
-            this.toaster.error(error.error.errors[0].detail, 'Oops!');
+            // this.toaster.error(error.error.errors[0].detail, 'Oops!');
           }
         //   this.spinner.hide();
           return observableThrowError(error);
         }
         if (error instanceof HttpErrorResponse && error.status === 403) {
           if (error.error.message) {
-            this.toaster.error(error.error.message, 'Oops!');
+            // this.toaster.error(error.error.message, 'Oops!');
           } else {
-            this.toaster.error(error.error, 'Oops!');
+            // this.toaster.error(error.error, 'Oops!');
           }
         //   this.spinner.hide();
           return observableThrowError(error);
@@ -52,7 +52,7 @@ export class ResponseInterceptor implements HttpInterceptor {
         if (error instanceof HttpErrorResponse && error.status === 404) {
           this.router.navigateByUrl('/auth/404');
           this.toaster.error(error.error.message, 'Oops!');
-        //   this.spinner.hide();
+          // this.spinner.hide();
           return observableThrowError(error);
         }
         if (error instanceof HttpErrorResponse && error.status === 500) {

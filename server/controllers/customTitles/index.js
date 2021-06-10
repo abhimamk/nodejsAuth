@@ -1,15 +1,7 @@
 const { response } = require('express');
 const CustomTitles = require('../../models/customTitle');
-// const getPagination = (page, size) => {
-//     const limit = size ? +size : 1;
-//     const offset = page ? page * limit : 0;
-
-//     return { limit, offset };
-//   };
-// const { Handler: { successResponseHandler, errorResponseHandler } } = require('../../../utils/handlers.util');
 module.exports = {
   // add customTitle
-
   addCustomTitle: (req, res) => {
     let newCustomTitles = new CustomTitles(req.body);
     newCustomTitles
@@ -29,7 +21,6 @@ module.exports = {
 
   // Get All Custom Title
   getAllCustomTitle: function (req, res) {
-    // Retrieve and return all notes from the database.
     CustomTitles.find(function (err, customTitles) {
       if (err) {
         res.status(500).send({
@@ -43,17 +34,10 @@ module.exports = {
 
   findAll: function (req, res) {
     const { title } = req.query;
-    // var condition = title
-    //   ? { title: { $regex: new RegExp(title), $options: "i" } }
-    //   : {};
-
-    // const { limit, offset } = getPagination(page, size);
 
     var condition = title[0]
       ? { title: { $regex: new RegExp(title[0]), $options: 'i' } }
       : {};
-    // ? { title: { $regex: new RegExp(title), $options: "i" } }
-    // : {};
     const page = parseInt(req.query.page[0]);
     const limit = parseInt(req.query.limit[0]);
     CustomTitles.paginate(condition, { page, limit })

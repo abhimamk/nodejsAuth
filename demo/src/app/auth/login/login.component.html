@@ -28,7 +28,7 @@
                     <small>Password is required</small>
                 </div>
                 <div class="form-check">
-                    <button type="submit" class="btn btn-login float-right">Register</button>
+                    <button type="submit" class="btn btn-login float-right" [routerLink]="['/auth/register']">Register</button>
                     <button class="btn btn-login float-right" [disabled]="!loginForm.valid" type="submit"
                         (click)="onLogin()">Login</button>
 

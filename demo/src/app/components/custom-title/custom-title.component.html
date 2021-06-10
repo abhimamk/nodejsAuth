@@ -14,11 +14,11 @@
         </div>
     </form>
 
-    <div style="padding-top: 2rem;">
+    <div style="padding-top: 2rem;" *ngIf="customTitle.length !== 0">
         <input type="text" class="float-right" placeholder="Search Title" aria-describedby="basic-addon2"
             (keyup)="search($event.target.value)">
     </div>
-    <div class="table-responsive-sm-md-lg-xl" style="padding-top: 3rem;">
+    <div class="table-responsive-sm-md-lg-xl" style="padding-top: 3rem;" *ngIf="customTitle.length !== 0">
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
@@ -42,9 +42,12 @@
             </tbody>
         </table>
     </div>
-    <div class="d-flex flex-wrap flex-sm-nowrap justify-content-between align-items-start">
-        <!-- <pagination-controls *ngIf="titleNames?.length !==0" (pageChange)="pageId1 = $event;" class="my-pagination">
-        </pagination-controls> -->
+    <div *ngIf="customTitle.length === 0">
+        <h1 style="color: brown;padding-left: 40%;">
+            No Data Found
+        </h1>
+    </div>
+    <div class="d-flex flex-wrap flex-sm-nowrap justify-content-between align-items-start" *ngIf="customTitle.length !== 0">
         <pagination-controls id="foo" (pageChange)="pageChanged($event)"
             (pageBoundsCorrection)="pageChanged($event)" directionLinks="true" 
             responsive="true" previousLabel="Previous" nextLabel="Next" screenReaderPaginationLabel="Pagination"
