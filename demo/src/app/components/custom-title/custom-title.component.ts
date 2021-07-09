@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CustomTitleService } from './custom-title.service';
 import { Title } from './customTitle';
 import { ToastrService } from 'ngx-toastr';
+import { User } from 'src/app/core/layout/user.model';
 
 @Component({
   selector: 'app-custom-title',
@@ -10,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./custom-title.component.css'],
 })
 export class CustomTitleComponent implements OnInit {
+  userDetails: User;
   customTitle: any[] = [];
   customTitleForm: FormGroup;
   titleObj: Title;
@@ -26,13 +28,22 @@ export class CustomTitleComponent implements OnInit {
     private customTitleService: CustomTitleService,
     private formBuilder: FormBuilder,
     public toastr: ToastrService
-  ) {}
+  ) {
+    this.userDetails = JSON.parse(localStorage.getItem('me'));
+  }
 
   ngOnInit(): void {
     this.initForm();
-    this.pagination();
+    this.verifyUser();
   }
 
+  verifyUser(): any {
+    if (this.userDetails.email === 'amk@gmail.com') {
+      this.pagination();
+    } else {
+      this.userById();
+    }
+  }
   initForm(): void {
     this.customTitleForm = this.formBuilder.group({
       title: ['', Validators.compose([Validators.required])],
@@ -61,13 +72,24 @@ export class CustomTitleComponent implements OnInit {
 
   getAllCustomTitle(): void {
     this.customTitleService.getAllCustomTitle().subscribe((res: Title[]) => {
-     return this.customTitle = res.reverse();
+      return (this.customTitle = res.reverse());
     });
   }
 
   pagination(): any {
     this.customTitleService
-      .pagination(this.currentPage, this.itemPerPage, this.searchSe)
+      .adminPagination(this.currentPage, this.itemPerPage, this.searchSe)
+      .subscribe((res: any) => {
+        this.customTitle = res.response.reverse();
+        this.pageSizes = res.pages;
+        this.cPage = res.page;
+        this.total = res.NumberOfTitle;
+      });
+  }
+
+  userById(): any {
+    this.customTitleService
+      .userPagination(this.currentPage, this.itemPerPage, this.searchSe, {userId: this.userDetails._id})
       .subscribe((res: any) => {
         this.customTitle = res.response.reverse();
         this.pageSizes = res.pages;
@@ -78,12 +100,12 @@ export class CustomTitleComponent implements OnInit {
 
   pageChanged(value): void {
     this.currentPage = value;
-    this.pagination();
+    this.verifyUser();
   }
 
   pageSize(value: number): void {
     this.itemPerPage = value;
-    this.pagination();
+    this.verifyUser();
   }
 
   // Add And Update CustomTitle
@@ -94,14 +116,18 @@ export class CustomTitleComponent implements OnInit {
       return;
     }
     if (!id) {
-      this.addNewTitle(this.customTitleForm.value);
+      this.addNewTitle();
     } else {
       this.updateTitle(id, this.customTitleForm.value);
     }
   }
 
-  addNewTitle(data): void {
-    this.customTitleService.AddNewTitle(data).subscribe(
+  addNewTitle(): void {
+    const instance = {
+      title: this.customTitleForm.value.title,
+      userId: this.userDetails._id,
+    };
+    this.customTitleService.AddNewTitle(instance).subscribe(
       (res) => {
         this.toasterSuccess(res.message);
       },
@@ -111,7 +137,7 @@ export class CustomTitleComponent implements OnInit {
       },
       // Success
       () => {
-        this.pagination();
+        this.verifyUser();
         this.clear();
       }
     );
@@ -128,7 +154,7 @@ export class CustomTitleComponent implements OnInit {
       },
       // Success
       () => {
-        this.pagination();
+        this.verifyUser();
         this.clear();
       }
     );
@@ -153,17 +179,17 @@ export class CustomTitleComponent implements OnInit {
       },
       // Success
       () => {
-        this.pagination();
+        this.verifyUser();
         this.clear();
       }
     );
   }
 
-  // Search Title
-  search(value): any {
+  // Admin Search Title
+  adminSearch(value): any {
     this.searchSe = value;
     this.customTitleService
-      .pagination(this.currentPage, this.itemPerPage, this.searchSe)
+      .adminPagination(this.currentPage, this.itemPerPage, this.searchSe)
       .subscribe((res: any) => {
         this.customTitle = res.response.reverse();
         this.pageSizes = res.pages;
@@ -172,9 +198,23 @@ export class CustomTitleComponent implements OnInit {
       });
   }
 
+  // Admin Search Title
+  userSearch(value): any {
+    this.searchSe = value;
+    this.customTitleService
+      .userPagination(
+        this.currentPage, this.itemPerPage, this.searchSe, {userId: this.userDetails._id}
+        )
+      .subscribe((res: any) => {
+        this.customTitle = res.response.reverse();
+        this.pageSizes = res.pages;
+        this.cPage = res.page;
+        this.total = res.NumberOfTitle;
+      });
+  }
   onSortClick(event): any {
     const target = event.currentTarget;
-    const  classList = target.classList;
+    const classList = target.classList;
 
     if (classList.contains('fa-chevron-up')) {
       classList.remove('fa-chevron-up');

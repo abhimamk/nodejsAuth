@@ -15,7 +15,7 @@ module.exports = function(app) {
     // get all All Custom Titles
     app.get('/api/getAllCustomTitles', authenticate, csrfCheck, CustomTitles.getAllCustomTitle);
 
-    app.get('/api/pagination', authenticate, csrfCheck, CustomTitles.findAll);
+    app.get('/api/adminPagination', authenticate, csrfCheck, CustomTitles.findAll);
     // Update Custom Title
     app.put('/api/updateCustomTitle/:id', authenticate, csrfCheck, CustomTitles.updateCustomTitle);
 
@@ -24,4 +24,6 @@ module.exports = function(app) {
 
     // Search Title
     app.post('/api/searchTitle', authenticate, csrfCheck, CustomTitles.searchTitle);
+
+    app.post('/api/titleByUserID', CustomTitles.getCustomTitleByUserId);
 }

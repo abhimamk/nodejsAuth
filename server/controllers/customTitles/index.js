@@ -34,12 +34,14 @@ module.exports = {
 
   findAll: function (req, res) {
     const { title } = req.query;
+    // const { userId } = req.query;
 
-    var condition = title[0]
-      ? { title: { $regex: new RegExp(title[0]), $options: 'i' } }
+    var condition = title
+      ? { title: { $regex: new RegExp(title), $options: 'i' } }
       : {};
-    const page = parseInt(req.query.page[0]);
-    const limit = parseInt(req.query.limit[0]);
+    // var userByData = userId;
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
     CustomTitles.paginate(condition, { page, limit })
       .then((data) => {
         res.send({
@@ -47,6 +49,38 @@ module.exports = {
           page: data.page,
           NumberOfTitle: data.total,
           displayedTitle: data.limit,
+          pages: data.pages,
+        });
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || 'Some error occurred while retrieving tutorials.',
+        });
+      });
+  },
+
+  getCustomTitleByUserId: async (req, res) => {
+    const { title } = req.query;
+
+    var condition =title
+      ? { title: { $regex: new RegExp(title), $options: 'i' } }
+      : {};
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+    let queryCond = {};
+    req.body.userId !== 'all' && (queryCond['userId'] = req.body.userId);
+    if(title){
+      queryCond['title']= title
+    };
+    //let output = await CustomTitles.find(queryCond);
+    CustomTitles.paginate(queryCond, condition, { page, limit })
+      .then((data) => {
+        res.send({
+          response: data.docs,
+          page: data.page,
+          NumberOfTitle: data.total,
+          // displayedTitle: data.limit,
           pages: data.pages,
         });
       })

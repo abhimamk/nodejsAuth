@@ -38,6 +38,14 @@ export class CustomTitleService {
     if (!title) {
       params.delete('title', '');
     }
-    return this.http.get<Title>(`/pagination`, { params });
+    return this.http.get<Title>(`/adminPagination`, { params });
+  }
+
+  adminPagination(page, limit, title): Observable<any> {
+    return this.http.get<Title>(`/adminPagination?page=${page}&limit=${limit}&title=${title}`);
+  }
+
+  userPagination(page, limit, title, userID): Observable<any> {
+    return this.http.post<Title>(`/titleByUserID?page=${page}&limit=${limit}&title=${title}`, userID);
   }
 }
