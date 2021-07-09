@@ -63,18 +63,18 @@ module.exports = {
   getCustomTitleByUserId: async (req, res) => {
     const { title } = req.query;
 
-    var condition =title
+/*     var condition =title
       ? { title: { $regex: new RegExp(title), $options: 'i' } }
-      : {};
+      : {}; */
     const page = parseInt(req.query.page);
     const limit = parseInt(req.query.limit);
     let queryCond = {};
     req.body.userId !== 'all' && (queryCond['userId'] = req.body.userId);
     if(title){
-      queryCond['title']= title
+      queryCond['title']= { $regex: new RegExp(title), $options: 'i' }
     };
     //let output = await CustomTitles.find(queryCond);
-    CustomTitles.paginate(queryCond, condition, { page, limit })
+    CustomTitles.paginate(queryCond, { page, limit })
       .then((data) => {
         res.send({
           response: data.docs,
